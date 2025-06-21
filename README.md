@@ -1,6 +1,6 @@
 # @bredele/detect-package-manager
 
-Detect the package manager engine (npm, pnpm, yarn, bun) and versions in any project.
+Detect the package manager engine (npm, pnpm, yarn, bun) and versions.
 
 ## Installation
 
@@ -13,7 +13,6 @@ npm install @bredele/detect-package-manager
 ```typescript
 import detectPackageManager from '@bredele/detect-package-manager';
 
-// Detect from current working directory
 const info = detectPackageManager();
 console.log(info);
 // {
@@ -21,24 +20,18 @@ console.log(info);
 //   nodeVersion: 'v18.17.0',
 //   engineVersion: '9.6.7'
 // }
-
-// Detect from specific directory
-const projectInfo = detectPackageManager('/path/to/project');
 ```
 
 ## API
 
-### `detectPackageManager(cwd?: string): PackageManagerInfo`
+### `detectPackageManager(): PackageManagerInfo`
 
-Detects the package manager used in a project directory.
-
-**Parameters:**
-- `cwd` (optional): The directory to analyze. Defaults to `process.cwd()`.
+Detects the package manager currently being used.
 
 **Returns:**
 ```typescript
 interface PackageManagerInfo {
-  engine: 'npm' | 'pnpm' | 'yarn' | 'bun' | 'unknown';
+  engine: 'npm' | 'pnpm' | 'yarn' | 'bun';
   nodeVersion: string;
   engineVersion: string;
 }
@@ -46,11 +39,14 @@ interface PackageManagerInfo {
 
 ## Detection Strategy
 
-The function uses multiple detection methods in order of preference:
+The function detects the package manager by checking the `npm_config_user_agent` environment variable:
 
-1. **Lock files**: Checks for `bun.lockb`, `pnpm-lock.yaml`, `yarn.lock`, `package-lock.json`
-2. **Environment variables**: Analyzes `npm_config_user_agent` and `npm_execpath`
-3. **Binary availability**: Tests which package manager binaries are available
+- If it starts with `pnpm` → returns `'pnpm'`
+- If it starts with `yarn` → returns `'yarn'`
+- If it starts with `bun` → returns `'bun'`
+- Otherwise → returns `'npm'`
+
+This environment variable is automatically set by package managers when running npm scripts.
 
 ## License
 

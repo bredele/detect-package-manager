@@ -12,10 +12,10 @@
     "declaration": true,
     "declarationMap": true,
     "outDir": "dist",
-    "rootDir": "src",
+    "rootDir": "lib",
     "noEmit": false,
     "resolveJsonModule": true
   },
-  "include": ["src/**/*"],
+  "include": ["lib/**/*"],
   "exclude": ["node_modules", "dist"]
 }
