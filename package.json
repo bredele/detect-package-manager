@@ -1,0 +1,42 @@
+{
+  "name": "@bredele/detect-package-manager",
+  "version": "1.0.0",
+  "description": "Detect the package manager engine (npm, pnpm, yarn, bun) and versions",
+  "main": "./dist/cjs/index.js",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "types": "./dist/types/index.d.ts"
+    }
+  },
+  "types": "./dist/types/index.d.ts",
+  "scripts": {
+    "build": "cmplr",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run build && node --test dist/cjs/index.test.js"
+  },
+  "keywords": [
+    "package-manager",
+    "npm",
+    "pnpm",
+    "yarn",
+    "bun",
+    "detect",
+    "version"
+  ],
+  "author": "Olivier Wietrich",
+  "license": "MIT",
+  "devDependencies": {
+    "cmplr": "^1.0.0",
+    "@types/node": "^24.0.3",
+    "typescript": "^5.8.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "module": "./dist/esm/index.js"
+}
