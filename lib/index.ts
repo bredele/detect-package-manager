@@ -1,5 +1,3 @@
-import { execSync } from 'child_process';
-
 export interface PackageManagerInfo {
   engine: 'npm' | 'pnpm' | 'yarn' | 'bun';
   nodeVersion: string;
@@ -35,12 +33,7 @@ export default function detectPackageManager(): PackageManagerInfo {
     else if (userAgent.startsWith("bun")) engine = "bun";
     else engine = "npm";
     
-    // Try to get version via command execution as fallback
-    try {
-      engineVersion = execSync(`${engine} --version`, { encoding: 'utf8' }).trim();
-    } catch {
-      engineVersion = 'unknown';
-    }
+    engineVersion = 'unknown';
   }
   
   return {

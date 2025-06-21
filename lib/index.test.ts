@@ -62,7 +62,7 @@ test('detectPackageManager should default to npm when no user agent', () => {
   
   assert.equal(result.engine, 'npm');
   assert.ok(result.nodeVersion.startsWith('v'));
-  assert.ok(typeof result.engineVersion === 'string');
+  assert.equal(result.engineVersion, 'unknown');
   
   // Restore original environment
   if (originalUserAgent) {
@@ -78,6 +78,7 @@ test('detectPackageManager should default to npm when user agent is empty', () =
   
   assert.equal(result.engine, 'npm');
   assert.ok(result.nodeVersion.startsWith('v'));
+  assert.equal(result.engineVersion, 'unknown');
   
   // Restore original environment
   if (originalUserAgent) {
@@ -97,7 +98,7 @@ test('detectPackageManager should return node version', () => {
 test('detectPackageManager should return engine version', () => {
   const result = detectPackageManager();
   
-  // Should be able to get version for the detected engine
+  // Should return a string (either parsed version or 'unknown')
   assert.ok(typeof result.engineVersion === 'string');
 });
 
@@ -111,6 +112,7 @@ test('detectPackageManager should handle startsWith correctly', () => {
   
   // Should detect as npm since it starts with npm, not pnpm
   assert.equal(result.engine, 'npm');
+  assert.equal(result.engineVersion, '10.0.0');
   
   // Restore original environment
   if (originalUserAgent) {
