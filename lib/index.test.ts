@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import { strict as assert } from 'node:assert';
-import detectPackageManager from './index.js';
+import detectPackageManager from '.';
 
 test('detectPackageManager should detect pnpm from user agent', () => {
   const originalUserAgent = process.env.npm_config_user_agent;

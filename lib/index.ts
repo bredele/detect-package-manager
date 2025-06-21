@@ -15,15 +15,14 @@ const parseUserAgent = (userAgent: string) => {
 /**
  * Detect the package manager engine and versions
  */
-export default function detectPackageManager(): PackageManagerInfo {
+
+export default (): PackageManagerInfo => {
   const nodeVersion = process.version;
-  const userAgent = process.env.npm_config_user_agent || "";
-  
-  const parsed = parseUserAgent(userAgent);
-  
+  const userAgent = process.env.npm_config_user_agent;
+  const parsed = parseUserAgent(userAgent || '');
   return {
     engine: (parsed?.engine as PackageManagerInfo['engine']) || 'npm',
     nodeVersion,
-    engineVersion: parsed?.version || 'unknown'
+    engineVersion: parsed?.version || 'unknown',
   };
 }
