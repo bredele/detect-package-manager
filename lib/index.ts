@@ -6,12 +6,10 @@ export interface PackageManagerInfo {
   engineVersion: string;
 }
 
-const getPackageManager = (): string => {
-  const userAgent = process.env.npm_config_user_agent || "";
-  if (userAgent.startsWith("pnpm")) return "pnpm";
-  if (userAgent.startsWith("yarn")) return "yarn";
-  if (userAgent.startsWith("bun")) return "bun";
-  return "npm";
+const parseUserAgent = (userAgent: string) => {
+  // Extract engine/version from patterns like "pnpm/8.6.12" or "npm/10.0.0"
+  const match = userAgent.match(/^(\w+)\/([^\s]+)/);
+  return match ? { engine: match[1], version: match[2] } : null;
 };
 
 /**
@@ -19,13 +17,30 @@ const getPackageManager = (): string => {
  */
 export default function detectPackageManager(): PackageManagerInfo {
   const nodeVersion = process.version;
-  const engine = getPackageManager();
+  const userAgent = process.env.npm_config_user_agent || "";
   
-  let engineVersion = 'unknown';
-  try {
-    engineVersion = execSync(`${engine} --version`, { encoding: 'utf8' }).trim();
-  } catch {
-    // If version command fails, keep as 'unknown'
+  // Try to parse engine and version from user agent
+  const parsed = parseUserAgent(userAgent);
+  
+  let engine: string;
+  let engineVersion: string;
+  
+  if (parsed) {
+    engine = parsed.engine;
+    engineVersion = parsed.version;
+  } else {
+    // Fallback to detection without version info
+    if (userAgent.startsWith("pnpm")) engine = "pnpm";
+    else if (userAgent.startsWith("yarn")) engine = "yarn";
+    else if (userAgent.startsWith("bun")) engine = "bun";
+    else engine = "npm";
+    
+    // Try to get version via command execution as fallback
+    try {
+      engineVersion = execSync(`${engine} --version`, { encoding: 'utf8' }).trim();
+    } catch {
+      engineVersion = 'unknown';
+    }
   }
   
   return {

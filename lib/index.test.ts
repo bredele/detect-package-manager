@@ -119,3 +119,55 @@ test('detectPackageManager should handle startsWith correctly', () => {
     delete process.env.npm_config_user_agent;
   }
 });
+
+test('detectPackageManager should extract version from user agent', () => {
+  const originalUserAgent = process.env.npm_config_user_agent;
+  process.env.npm_config_user_agent = 'pnpm/8.6.12 npm/? node/v18.17.0 darwin arm64';
+  
+  const result = detectPackageManager();
+  
+  assert.equal(result.engine, 'pnpm');
+  assert.equal(result.engineVersion, '8.6.12');
+  assert.ok(result.nodeVersion.startsWith('v'));
+  
+  // Restore original environment
+  if (originalUserAgent) {
+    process.env.npm_config_user_agent = originalUserAgent;
+  } else {
+    delete process.env.npm_config_user_agent;
+  }
+});
+
+test('detectPackageManager should extract yarn version from user agent', () => {
+  const originalUserAgent = process.env.npm_config_user_agent;
+  process.env.npm_config_user_agent = 'yarn/1.22.19 npm/? node/v18.17.0 darwin arm64';
+  
+  const result = detectPackageManager();
+  
+  assert.equal(result.engine, 'yarn');
+  assert.equal(result.engineVersion, '1.22.19');
+  
+  // Restore original environment
+  if (originalUserAgent) {
+    process.env.npm_config_user_agent = originalUserAgent;
+  } else {
+    delete process.env.npm_config_user_agent;
+  }
+});
+
+test('detectPackageManager should extract bun version from user agent', () => {
+  const originalUserAgent = process.env.npm_config_user_agent;
+  process.env.npm_config_user_agent = 'bun/1.0.0 npm/? node/v18.17.0 darwin arm64';
+  
+  const result = detectPackageManager();
+  
+  assert.equal(result.engine, 'bun');
+  assert.equal(result.engineVersion, '1.0.0');
+  
+  // Restore original environment
+  if (originalUserAgent) {
+    process.env.npm_config_user_agent = originalUserAgent;
+  } else {
+    delete process.env.npm_config_user_agent;
+  }
+});

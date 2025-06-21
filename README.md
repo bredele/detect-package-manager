@@ -39,14 +39,12 @@ interface PackageManagerInfo {
 
 ## Detection Strategy
 
-The function detects the package manager by checking the `npm_config_user_agent` environment variable:
+The function detects the package manager and its version by parsing the `npm_config_user_agent` environment variable:
 
-- If it starts with `pnpm` → returns `'pnpm'`
-- If it starts with `yarn` → returns `'yarn'`
-- If it starts with `bun` → returns `'bun'`
-- Otherwise → returns `'npm'`
+1. **Primary method**: Parses the user agent string (e.g., `pnpm/8.6.12 npm/? node/v18.17.0 darwin arm64`) to extract both engine name and version
+2. **Fallback method**: If parsing fails, falls back to simple prefix detection and executes `{engine} --version` command
 
-This environment variable is automatically set by package managers when running npm scripts.
+The `npm_config_user_agent` environment variable is automatically set by package managers when running npm scripts and contains both the package manager name and version in a predictable format.
 
 ## License
 
