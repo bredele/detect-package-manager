@@ -4,9 +4,11 @@ export interface PackageManagerInfo {
   engineVersion: string;
 }
 
+// Extract engine/version from patterns like "pnpm/8.6.12" or "npm/10.0.0"
+const USER_AGENT_REGEX = /^(\w+)\/([^\s]+)/;
+
 const parseUserAgent = (userAgent: string) => {
-  // Extract engine/version from patterns like "pnpm/8.6.12" or "npm/10.0.0"
-  const match = userAgent.match(/^(\w+)\/([^\s]+)/);
+  const match = userAgent.match(USER_AGENT_REGEX);
   return match ? { engine: match[1], version: match[2] } : null;
 };
 
@@ -17,28 +19,11 @@ export default function detectPackageManager(): PackageManagerInfo {
   const nodeVersion = process.version;
   const userAgent = process.env.npm_config_user_agent || "";
   
-  // Try to parse engine and version from user agent
   const parsed = parseUserAgent(userAgent);
   
-  let engine: string;
-  let engineVersion: string;
-  
-  if (parsed) {
-    engine = parsed.engine;
-    engineVersion = parsed.version;
-  } else {
-    // Fallback to detection without version info
-    if (userAgent.startsWith("pnpm")) engine = "pnpm";
-    else if (userAgent.startsWith("yarn")) engine = "yarn";
-    else if (userAgent.startsWith("bun")) engine = "bun";
-    else engine = "npm";
-    
-    engineVersion = 'unknown';
-  }
-  
   return {
-    engine: engine as PackageManagerInfo['engine'],
+    engine: (parsed?.engine as PackageManagerInfo['engine']) || 'npm',
     nodeVersion,
-    engineVersion
+    engineVersion: parsed?.version || 'unknown'
   };
 }

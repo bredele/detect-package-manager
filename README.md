@@ -22,27 +22,11 @@ console.log(info);
 // }
 ```
 
-## API
-
-### `detectPackageManager(): PackageManagerInfo`
-
-Detects the package manager currently being used.
-
-**Returns:**
-```typescript
-interface PackageManagerInfo {
-  engine: 'npm' | 'pnpm' | 'yarn' | 'bun';
-  nodeVersion: string;
-  engineVersion: string;
-}
-```
-
 ## Detection Strategy
 
-The function detects the package manager and its version by parsing the `npm_config_user_agent` environment variable:
+The function detects the package manager and its version by parsing the `npm_config_user_agent` environment variable.
 
-1. **Primary method**: Parses the user agent string (e.g., `pnpm/8.6.12 npm/? node/v18.17.0 darwin arm64`) to extract both engine name and version
-2. **Fallback method**: If parsing fails, falls back to simple prefix detection and executes `{engine} --version` command
+It parses the user agent string (e.g., `pnpm/8.6.12 npm/? node/v18.17.0 darwin arm64`) to extract both engine name and version. If parsing fails, it defaults to `npm` with `unknown` version.
 
 The `npm_config_user_agent` environment variable is automatically set by package managers when running npm scripts and contains both the package manager name and version in a predictable format.
 
